@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package srv;
+
+service SimpleService {
+  rpc SimpleRPC (stream SimpleData) returns (stream SimpleData) {}
+  rpc SimpleHandler (SimpleRequestHandler) returns(SimpleResponseHandler){}
+}
+
+message SimpleData {
+  string msg = 1;
+}
+
+message SimpleRequestHandler {
+  string msg = 1;
+}
+message SimpleResponseHandler {
+  bool status = 1;
+}
