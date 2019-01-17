@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net"
+	"strconv"
+	"time"
 
 	proto "github.com/zokypesch/streaming/srv"
 	"google.golang.org/grpc"
@@ -16,18 +17,27 @@ type SimpleStreamming struct{}
 
 // SimpleRPC for register service
 func (s *SimpleStreamming) SimpleRPC(stream proto.SimpleService_SimpleRPCServer) error {
-	for {
-		in, err := stream.Recv()
-		log.Println("Received value")
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-		log.Println("Got " + in.Msg)
-		stream.Send(&proto.SimpleData{Msg: "cihoyyyy"})
+	//bidirect
+	// for {
+	// 	in, err := stream.Recv()
+	// 	log.Println("Received value")
+	// 	if err == io.EOF {
+	// 		return nil
+	// 	}
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	log.Println("Got " + in.Msg)
+	// 	stream.Send(&proto.SimpleData{Msg: "cihoyyyy"})
+	// }
+
+	// serverside
+	in, _ := stream.Recv()
+	for i := 0; i < 5; i++ {
+		time.Sleep(2 * time.Second)
+		stream.Send(&proto.SimpleData{Msg: in.Msg + " data ke " + strconv.Itoa(i)})
 	}
+	return nil
 }
 
 // SimpleHandler for register service
